@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8" />
+<head>
+<style>    
+body {
+        font-family: "Trebuchet MS", Helvetica, sans-serif;
+        color: #333333;
+    }
+ul.a {
+    margin: 5;
+    padding: 10px;
+    font: 200 20px/1.5 Helvetica, Verdana, sans-serif;
+    border-bottom: 5px solid #ccc;
+}  
+
+h2 {
+    background-color: rgb(251, 251, 255);
+}
+
+
+</style>
+<script>
+function toDo() {
+   
+var lista = document.getElementById("lista");
+var text = document.getElementById("textdata").value;
+var syöte = document.createTextNode(text);
+linebreak = document.createElement("br");//Tällä sain uuden lisäyksen uudelle riville
+
+//tekstin lisäys IF ELSE lauseella
+if (text.length < 2 || text.length > 15 || text === "") {
+    document.getElementById("virhe").innerHTML="<b>*Täytä kenttä oikein!</b>";
+    lista.style.borderColor ="red";
+    document.getElementById("virhe").style.display = 'inline';
+    return false;
+} else {
+    lista.appendChild(linebreak);
+    document.getElementById("lista").appendChild(syöte);
+    localStorage.setItem("todolist", lista.innerHTML);//local storageen kirjoitukset muistiin
+    return true;
+}
+}
+//Virheilmoitus pois 
+document.onchange = function() {
+    document.getElementById("virhe").style.display = 'none';
+    lista.style.borderColor = "blue";
+}
+//ladataan aiemmat kirjoitukset kun sivu päivitetään
+function lataaLista() {
+    if(localStorage.todolist) {
+    var lataa = localStorage.getItem("todolist");
+
+    var tiedot = document.getElementById("lista");
+    lista.innerHTML = lataa;
+    }
+}
+//nappi poistamaan listan
+function poistaLista() {
+    var text = document.getElementById("lista");
+    localStorage.clear();
+    text.style.display = "none";
+    location.reload(); //päivitän sivun, koska aikaisemmin tekstit silti jäi sivulle vaikka ne poistui näkyvistä 
+    return false;
+}
+
+//Enter myös lisää tekstin
+document.onkeydown=function(){
+    if(window.event.keyCode=='13'){
+        toDo();
+        return false;
+    }
+}
+//nopea tekstiboksi, en oikein keksinyt muuta käyttöä kuin tekijän nimi 
+function showInfo() {
+        var checkBox = document.getElementById("myCheck");
+        var text = document.getElementById("text");
+        if (checkBox.checked == true){
+        text.style.display = "block";
+       
+        } else {
+        text.style.display = "none";
+        }
+          }
+
+
+
+
+</script>
+</head>
+<body onload="lataaLista()">
+<form name="muistiinpanot" onsubmit="return toDo()">    
+<h2>Lisää muistiinpano</h2>
+<textarea id="textdata" input type="text" placeholder="Min. 2 merkkiä" name="teksti"></textarea><span id="virhe"></span><br>
+<input type="submit" value="Lisää">
+<ul class="a" id="lista">
+</ul>
+<button onclick="return poistaLista()">Tyhjennä lista</button>
+Tekijä <input type="checkbox" id="myCheck" onclick="return showInfo()">
+<p id="text" style="display:none" input type="text" name="tiedot">Juuso Leino
+
+
+
+</form>    
+</body>
+
+</html>
